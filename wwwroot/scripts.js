@@ -1,6 +1,11 @@
 var canvas = document.getElementById("gameZone");
 var context = canvas.getContext("2d");
 
+var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
+
+connection.start().catch(function (e) {
+});
+
 var bullets = [];
 var tanks = [];
 const countTanks = 2;
@@ -29,10 +34,10 @@ function Tank() {
         speed: 8,
         directionRotate: 90,
         position:
-        {
-            x: 0,
-            y: 0
-        },
+            {
+                x: 0,
+                y: 0
+            },
         size: {
             height: 100,
             width: 56
@@ -159,10 +164,10 @@ function Bullet() {
         speed: 6,
         tankId: "",
         position:
-        {
-            x: 0,
-            y: 0
-        },
+            {
+                x: 0,
+                y: 0
+            },
 
         size: {
             height: 40,
@@ -178,16 +183,16 @@ function Bullet() {
             context.save();
             context.translate(this.position.x, this.position.y);
             context.rotate(inRad(this.directionRotate));
-            context.drawImage(this.image, -(this.size.width / 2), - (this.size.height / 2), this.size.width, this.size.height);
+            context.drawImage(this.image, -(this.size.width / 2), -(this.size.height / 2), this.size.width, this.size.height);
             context.restore();
 
-            tanks.forEach((tank, i) => {               
+            tanks.forEach((tank, i) => {
                 let tankWidth = tank.directionRotate === 0 || tank.directionRotate === 180 ? tank.size.width : tank.size.height;
-                let tankHeight = tank.directionRotate === 0 || tank.directionRotate === 180 ? tank.size.height : tank.size.width;                
+                let tankHeight = tank.directionRotate === 0 || tank.directionRotate === 180 ? tank.size.height : tank.size.width;
                 let tankX = tank.position.x - tankWidth / 2;
-                let tankY = tank.position.y - tankHeight / 2; 
+                let tankY = tank.position.y - tankHeight / 2;
 
-                context.strokeRect( tankX, tankY, tankWidth, tankHeight);
+                context.strokeRect(tankX, tankY, tankWidth, tankHeight);
                 if (tank._id !== this.tankId &&
                     this.position.x >= tankX / 2 && this.position.x <= tankX + tankWidth &&
                     this.position.y >= tankY && this.position.y <= tankY + tankHeight) {
@@ -233,35 +238,46 @@ function Bullet() {
 
 // обрабатываем нажатия на клавиши для управления игрой
 
+const action = {MoveLeft: 'MoveLeft', MoveRight: 'MoveRight', MoveUp: 'MoveUp', MoveDown: 'MoveDown', Fire: 'fire'};
+
 document.addEventListener('keydown', function (e) {
 
     const myTank = tanks.find((tank) => tank._id === "11");
 
     //console.log("myTank", myTank);
 
+    let state = action.Fire;
+
     // влево
     if (e.which === 37) {
         myTank.movingLeft();
+        state = action.MoveLeft;
     }
 
     // вправо
     else if (e.which === 39) {
         myTank.movingRight();
+        state = action.MoveRight;
     }
 
     // вверх
     else if (e.which === 38) {
         myTank.movingUp();
+        state = action.MoveUp;
     }
 
     // вниз
     else if (e.which === 40) {
         myTank.movingDown();
+        state = action.MoveDown;
+    } else if (e.which === 32) {
+        myTank.firing();
+        state = action.Fire;
     }
 
-    else if (e.which === 32) {
-        myTank.firing();
-    }
+    connection.invoke("SendAction", state).catch(function (err) {
+         return console.error(err.toString());
+     });
 });
 
 function draw() {
@@ -283,7 +299,6 @@ function draw() {
 
     tanks.forEach(element => element.render());
 }
-
 
 
 // HElpers
