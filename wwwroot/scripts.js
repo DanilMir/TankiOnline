@@ -7,7 +7,7 @@ connection.start().catch(function (e) {
 });
 
 var bullets = [];
-var tanks = [];
+var tankList = [];
 const countTanks = 2;
 var tankIds = ["11", "22"];
 
@@ -21,12 +21,14 @@ canvas.width = gameZone.width;
 canvas.height = gameZone.height;
 
 
-for (let i = 0; i < countTanks; i++) {
-    const newTank = new Tank();
-    newTank.init(tankIds[i], getRandomIntInclusive(15, gameZone.width - 100), getRandomIntInclusive(15, gameZone.height - 100))
-}
+// for (let i = 0; i < countTanks; i++) {
+//     const newTank = new Tank();
+//     newTank.init(tankIds[i], getRandomIntInclusive(15, gameZone.width - 100), getRandomIntInclusive(15, gameZone.height - 100))
+// }
 
 connection.on("TanksState", function (tanks) {
+    console.log(tanks);
+    tankList = [];
     tanks.forEach((item) => {
         const newTank = new Tank();
         // newTank._id = item.id;
@@ -41,12 +43,10 @@ connection.on("TanksState", function (tanks) {
         //     y: item.position.y
         // };
         // newTank.directionRotate = item.directionRotate;
-        newTank.init(item.id, item.position.x, item.position.y)
+        newTank.inittwo(item.id, item.position.x, item.position.y, item.directionRotate)
     });
-    
-    console.log(tanks);
+    requestAnimationFrame(draw);
     // newTank.init(1, tank.position)
-    
 });
 
 // Танк
@@ -74,7 +74,7 @@ function Tank() {
             this.position.y = positionY;
             this._id = id;
 
-            tanks.push(this);
+            tankList.push(this);
 
             /* if(this._id === "22")
              {
@@ -82,9 +82,27 @@ function Tank() {
              }*/
         },
 
+        inittwo: function (id, positionX, positionY, directionRotate) {
+            this.image = new Image();
+            this.image.src = "img/tanks_1.png";
+
+            this.position.x = positionX;
+            this.position.y = positionY;
+            this._id = id;
+
+            this.directionRotate = directionRotate;
+            
+            tankList.push(this);
+            
+            /* if(this._id === "22")
+             {
+                 setTimeout(() => { console.log("destroy"); this.destroy();}, 4000);
+             }*/
+        },
+
         destroy: function () {
-            console.log("destroy", this._id, this._id, tanks.findIndex((tank) => tank._id === this._id));
-            tanks.splice(tanks.findIndex((tank) => tank._id === this._id), 1);
+            console.log("destroy", this._id, this._id, tankList.findIndex((tank) => tank._id === this._id));
+            tankList.splice(tankList.findIndex((tank) => tank._id === this._id), 1);
         },
 
         // отрисовка танка
@@ -209,7 +227,7 @@ function Bullet() {
             context.drawImage(this.image, -(this.size.width / 2), -(this.size.height / 2), this.size.width, this.size.height);
             context.restore();
 
-            tanks.forEach((tank, i) => {
+            tankList.forEach((tank, i) => {
                 let tankWidth = tank.directionRotate === 0 || tank.directionRotate === 180 ? tank.size.width : tank.size.height;
                 let tankHeight = tank.directionRotate === 0 || tank.directionRotate === 180 ? tank.size.height : tank.size.width;
                 let tankX = tank.position.x - tankWidth / 2;
@@ -265,7 +283,7 @@ const action = {MoveLeft: 'MoveLeft', MoveRight: 'MoveRight', MoveUp: 'MoveUp', 
 
 document.addEventListener('keydown', function (e) {
 
-    const myTank = tanks.find((tank) => tank._id === "11");
+    //const myTank = tanks.find((tank) => tank._id === "11");
 
     //console.log("myTank", myTank);
 
@@ -273,28 +291,28 @@ document.addEventListener('keydown', function (e) {
 
     // влево
     if (e.which === 37) {
-        myTank.movingLeft();
+        //myTank.movingLeft();
         state = action.MoveLeft;
     }
 
     // вправо
     else if (e.which === 39) {
-        myTank.movingRight();
+        //myTank.movingRight();
         state = action.MoveRight;
     }
 
     // вверх
     else if (e.which === 38) {
-        myTank.movingUp();
+        //myTank.movingUp();
         state = action.MoveUp;
     }
 
     // вниз
     else if (e.which === 40) {
-        myTank.movingDown();
+        //myTank.movingDown();
         state = action.MoveDown;
     } else if (e.which === 32) {
-        myTank.firing();
+        //myTank.firing();
         state = action.Fire;
     }
 
@@ -320,7 +338,7 @@ function draw() {
         }
     }
 
-    tanks.forEach(element => element.render());
+    tankList.forEach(element => element.render());
 }
 
 

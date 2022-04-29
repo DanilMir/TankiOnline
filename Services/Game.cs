@@ -4,8 +4,8 @@ namespace TankiOnline.Services;
 
 public class Game : IGame
 {
-    public int Height { get; set; }
-    public int Width { get; set; }
+    public static int Height { get; set; } = 600;
+    public static int Width { get; set; } = 600;
     
     public List<Tank> Tanks { get; set; }
 
