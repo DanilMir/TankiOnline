@@ -26,6 +26,29 @@ for (let i = 0; i < countTanks; i++) {
     newTank.init(tankIds[i], getRandomIntInclusive(15, gameZone.width - 100), getRandomIntInclusive(15, gameZone.height - 100))
 }
 
+connection.on("TanksState", function (tanks) {
+    tanks.forEach((item) => {
+        const newTank = new Tank();
+        // newTank._id = item.id;
+        // newTank.size = {
+        //     width: item.size.width,
+        //     height: item.size.height
+        // };
+        // newTank.speed = item.speed;
+        // newTank.image = item.image;
+        // newTank.position = {
+        //     x: item.position.x,
+        //     y: item.position.y
+        // };
+        // newTank.directionRotate = item.directionRotate;
+        newTank.init(item.id, item.position.x, item.position.y)
+    });
+    
+    console.log(tanks);
+    // newTank.init(1, tank.position)
+    
+});
+
 // Танк
 function Tank() {
     return {
