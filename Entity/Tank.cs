@@ -14,8 +14,9 @@ public class Tank
     public Size Size { get; set; } = new Size(56, 100);
 
 
-    public void Action(string action)
+    public void Action(string action, List<Bullet> bullets)
     {
+        Console.WriteLine(action);
         switch (action)
         {
             case "MoveLeft": 
@@ -30,7 +31,8 @@ public class Tank
             case "MoveDown":
                 MoveDown();
                 break;
-            case "Fire":
+            case "fire":
+                Fire(bullets);
                 break;
         }
     }
@@ -81,5 +83,49 @@ public class Tank
             }
         }
         this.directionRotate = 180;
+    }
+
+    private void Fire(List<Bullet> bullets)
+    {
+        var bullet = new Bullet
+        {
+            directionRotate = this.directionRotate,
+            TankId = this.Id
+        };
+
+        var position = new Position();
+        
+        switch (this.directionRotate) {
+            case 0:
+                position.X = this.Position.X;
+                position.Y = this.Position.Y - (this.Size.Height / 2) - (bullet.Size.Height / 3);
+                break;
+            case 180:
+                position.X = this.Position.X;
+                position.Y = this.Position.Y + (this.Size.Height / 2) + (bullet.Size.Height / 3);
+                break;
+
+            case 90:
+                position.X = this.Position.X + (this.Size.Height / 2) + (bullet.Size.Height / 3);
+                position.Y = this.Position.Y;
+                break;
+
+            case 270:
+                position.X = this.Position.X - (this.Size.Height / 2) - (bullet.Size.Height / 3);
+                position.Y = this.Position.Y;
+                break;
+
+            default:
+                position.X = this.Position.X;
+                position.Y = this.Position.Y - (this.Size.Height / 2) - (bullet.Size.Height / 3);
+                break;
+
+        }
+
+        bullet.Position = position;
+        
+        bullets.Add(bullet);
+        
+        Console.WriteLine(bullets.Count);
     }
 }

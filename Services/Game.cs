@@ -8,9 +8,16 @@ public class Game : IGame
     public static int Width { get; set; } = 600;
     
     public List<Tank> Tanks { get; set; }
+    public List<Bullet> Bullets { get; set; }
 
     public Game()
     {
         Tanks = new List<Tank>();
+        Bullets = new List<Bullet>();
+    }
+
+    public void Update()
+    {
+        
     }
 }

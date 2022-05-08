@@ -6,7 +6,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
 connection.start().catch(function (e) {
 });
 
-var bullets = [];
+var bulletList = [];
 var tankList = [];
 const countTanks = 2;
 var tankIds = ["11", "22"];
@@ -20,33 +20,28 @@ const gameZone = {
 canvas.width = gameZone.width;
 canvas.height = gameZone.height;
 
-
-// for (let i = 0; i < countTanks; i++) {
-//     const newTank = new Tank();
-//     newTank.init(tankIds[i], getRandomIntInclusive(15, gameZone.width - 100), getRandomIntInclusive(15, gameZone.height - 100))
-// }
-
 connection.on("TanksState", function (tanks) {
     console.log(tanks);
     tankList = [];
     tanks.forEach((item) => {
         const newTank = new Tank();
-        // newTank._id = item.id;
-        // newTank.size = {
-        //     width: item.size.width,
-        //     height: item.size.height
-        // };
-        // newTank.speed = item.speed;
-        // newTank.image = item.image;
-        // newTank.position = {
-        //     x: item.position.x,
-        //     y: item.position.y
-        // };
-        // newTank.directionRotate = item.directionRotate;
         newTank.inittwo(item.id, item.position.x, item.position.y, item.directionRotate)
     });
     requestAnimationFrame(draw);
-    // newTank.init(1, tank.position)
+});
+
+
+connection.on("BulletsState", function (bullets) {
+    console.log(bullets);
+    bulletList = [];
+    bullets.forEach((item) => {
+        const newBullet = new Bullet();
+        newBullet.position.x = item.position.x;
+        newBullet.position.y = item.position.y;
+        newBullet.directionRotate = item.directionRotate;
+        bulletList.push(newBullet);
+    });
+    requestAnimationFrame(draw);
 });
 
 // Танк
@@ -192,7 +187,7 @@ function Tank() {
 
             }
 
-            bullets.push(newBullet);
+            bulletList.push(newBullet);
         }
     }
 }
@@ -248,8 +243,8 @@ function Bullet() {
 
         },
         destroy: function () {
-            console.log("bullet", this._id, this._id, bullets.findIndex((bullet) => bullet == this));
-            bullets.splice(bullets.findIndex((bullet) => bullet == this), 1);
+            console.log("bullet", this._id, this._id, bulletList.findIndex((bullet) => bullet == this));
+            bulletList.splice(bulletList.findIndex((bullet) => bullet == this), 1);
         },
         move: function () {
             switch (this.directionRotate) {
@@ -279,14 +274,9 @@ function Bullet() {
 
 // обрабатываем нажатия на клавиши для управления игрой
 
-const action = {MoveLeft: 'MoveLeft', MoveRight: 'MoveRight', MoveUp: 'MoveUp', MoveDown: 'MoveDown', Fire: 'fire'};
+const action = {MoveLeft: 'MoveLeft', MoveRight: 'MoveRight', MoveUp: 'MoveUp', MoveDown: 'MoveDown', Fire: 'Fire'};
 
 document.addEventListener('keydown', function (e) {
-
-    //const myTank = tanks.find((tank) => tank._id === "11");
-
-    //console.log("myTank", myTank);
-
     let state = action.Fire;
 
     // влево
@@ -327,14 +317,14 @@ function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
 
-    for (var i = 0; i < bullets.length; i++) {
+    for (var i = 0; i < bulletList.length; i++) {
 
-        const bullet = bullets[i];
+        const bullet = bulletList[i];
         bullet.render();
-        console.log("bullets", bullets, bullets.length);
+        console.log("bullets", bulletList, bulletList.length);
 
         if (bullet.position.x < 0 || bullet.position.y < 0 || bullet.position.x > gameZone.width || bullet.position.y > gameZone.height) {
-            bullets.splice(i, 1);
+            bulletList.splice(i, 1);
         }
     }
 

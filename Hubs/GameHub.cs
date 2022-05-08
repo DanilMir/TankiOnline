@@ -25,6 +25,7 @@ public class GameHub : Hub
         Console.WriteLine($"Created: tank: {tank.Id}");
 
         await TanksState();
+        await BulletsState();
         await base.OnConnectedAsync();
     }
 
@@ -33,22 +34,29 @@ public class GameHub : Hub
         _game.Tanks.Remove(_game.Tanks.First(x => x.Id == Context.ConnectionId));
         Console.WriteLine($"Removed: tank: {Context.ConnectionId}");
         await TanksState();
+        await BulletsState();
         await base.OnDisconnectedAsync(exception);
     }
 
     public async Task SendAction(string curAction)
     {
-        Console.WriteLine(curAction);
-
         var tank = _game.Tanks.FirstOrDefault(x => x.Id == Context.ConnectionId);
-        tank?.Action(curAction);
-
+        tank?.Action(curAction, _game.Bullets);
         await TanksState();
-        ;
+        await BulletsState();
     }
 
     public async Task TanksState()
     {
         await Clients.All.SendAsync("TanksState", _game.Tanks);
+    }
+    
+    public async Task BulletsState()
+    {
+        foreach (var bullet in _game.Bullets)
+        {
+            bullet.Move();
+        }
+        await Clients.All.SendAsync("BulletsState", _game.Bullets);
     }
 }

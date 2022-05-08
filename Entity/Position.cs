@@ -10,4 +10,6 @@ public class Position
         X = x;
         Y = y;
     }
+
+    public Position() : this(0, 0) { }
 }
