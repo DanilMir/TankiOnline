@@ -20,30 +20,6 @@ const gameZone = {
 canvas.width = gameZone.width;
 canvas.height = gameZone.height;
 
-// connection.on("TanksState", function (tanks) {
-//     console.log(tanks);
-//     tankList = [];
-//     tanks.forEach((item) => {
-//         const newTank = new Tank();
-//         newTank.inittwo(item.id, item.position.x, item.position.y, item.directionRotate)
-//     });
-//     requestAnimationFrame(draw);
-// });
-//
-//
-// connection.on("BulletsState", function (bullets) {
-//     console.log(bullets);
-//     bulletList = [];
-//     bullets.forEach((item) => {
-//         const newBullet = new Bullet();
-//         newBullet.position.x = item.position.x;
-//         newBullet.position.y = item.position.y;
-//         newBullet.directionRotate = item.directionRotate;
-//         bulletList.push(newBullet);
-//     });
-//     requestAnimationFrame(draw);
-// });
-
 connection.on("State", function (tanks, bullets) {
     // console.log(tanks);
     tankList = [];
@@ -78,7 +54,7 @@ connection.on("State", function (tanks, bullets) {
     });
     
     //bulletList = [...bulletList2]
-    requestAnimationFrame(draw);
+    // requestAnimationFrame(draw);
 });
 
 // Танк

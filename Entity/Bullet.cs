@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using TankiOnline.Services;
 
 namespace TankiOnline.Entity;
 
@@ -13,7 +14,8 @@ public class Bullet
 
     public void Move()
     {
-        switch (this.directionRotate) {
+        switch (this.directionRotate)
+        {
             case 0:
                 this.Position.Y -= this.Speed;
                 break;
@@ -32,7 +34,23 @@ public class Bullet
             default:
                 this.Position.Y -= this.Speed;
                 break;
-
         }
+    }
+
+    public bool IsOutsideMap()
+    {
+        return Position.X > Game.Width || Position.X < 0 || Position.Y > Game.Height || Position.Y < 0;
+    }
+
+    public bool IsCollideWithTank(Tank tank)
+    {
+        var tankWidth = tank.directionRotate == 0 || tank.directionRotate == 180 ? tank.Size.Width : tank.Size.Height;
+        var tankHeight = tank.directionRotate == 0 || tank.directionRotate == 180 ? tank.Size.Height : tank.Size.Width;
+
+        var tankX = tank.Position.X - tankWidth / 2;
+        var tankY = tank.Position.Y - tankHeight / 2;
+
+        return tank.Id != TankId && this.Position.X >= tankX / 2 && this.Position.X <= tankX + tankWidth &&
+               this.Position.Y >= tankY && this.Position.Y <= tankY + tankHeight;
     }
 }
