@@ -8,10 +8,12 @@ namespace TankiOnline.Hubs;
 public class GameHub : Hub
 {
     private Game _game;
+    
 
     public GameHub(Game game)
     {
         _game = game;
+        
     }
 
     public override async Task OnConnectedAsync()
@@ -24,8 +26,8 @@ public class GameHub : Hub
         _game.Tanks.Add(tank);
         Console.WriteLine($"Created: tank: {tank.Id}");
 
-        await TanksState();
-        await BulletsState();
+        // await TanksState();
+        // await BulletsState();
         await base.OnConnectedAsync();
     }
 
@@ -33,8 +35,8 @@ public class GameHub : Hub
     {
         _game.Tanks.Remove(_game.Tanks.First(x => x.Id == Context.ConnectionId));
         Console.WriteLine($"Removed: tank: {Context.ConnectionId}");
-        await TanksState();
-        await BulletsState();
+        // await TanksState();
+        // await BulletsState();
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -42,8 +44,6 @@ public class GameHub : Hub
     {
         var tank = _game.Tanks.FirstOrDefault(x => x.Id == Context.ConnectionId);
         tank?.Action(curAction, _game.Bullets);
-        await TanksState();
-        await BulletsState();
     }
 
     public async Task TanksState()
@@ -53,10 +53,7 @@ public class GameHub : Hub
     
     public async Task BulletsState()
     {
-        foreach (var bullet in _game.Bullets)
-        {
-            bullet.Move();
-        }
+        Console.WriteLine("BulletsState2");
         await Clients.All.SendAsync("BulletsState", _game.Bullets);
     }
 }

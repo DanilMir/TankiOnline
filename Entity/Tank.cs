@@ -31,7 +31,7 @@ public class Tank
             case "MoveDown":
                 MoveDown();
                 break;
-            case "fire":
+            case "Fire":
                 Fire(bullets);
                 break;
         }
@@ -125,7 +125,5 @@ public class Tank
         bullet.Position = position;
         
         bullets.Add(bullet);
-        
-        Console.WriteLine(bullets.Count);
     }
 }
