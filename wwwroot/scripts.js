@@ -45,28 +45,28 @@ canvas.height = gameZone.height;
 // });
 
 connection.on("State", function (tanks, bullets) {
-    console.log(tanks);
-    tankList2 = [];
+    // console.log(tanks);
+    tankList = [];
     tanks.forEach((item) => {
         const newTank = new Tank();
 
         newTank.image = new Image();
         newTank.image.src = "img/tanks_1.png";
 
-        newTank.position.x = positionX;
-        newTank.position.y = positionY;
-        newTank._id = id;
+        newTank.position.x = item.position.x;
+        newTank.position.y = item.position.y;
+        newTank._id = item.id;
 
-        newTank.directionRotate = directionRotate;
+        newTank.directionRotate = item.directionRotate;
 
-        tankList2.push(newTank);
+        tankList.push(newTank);
         
         // newTank.inittwo(item.id, item.position.x, item.position.y, item.directionRotate)
     });
 
-    tankList = [...tankList2];
-    console.log(bullets);
-    bulletList2 = [];
+    //tankList = [...tankList2];
+    // console.log(bullets);
+    bulletList = [];
     bullets.forEach((item) => {
         const newBullet = new Bullet();
         newBullet.position.x = item.position.x;
@@ -74,11 +74,11 @@ connection.on("State", function (tanks, bullets) {
         newBullet.directionRotate = item.directionRotate;
         newBullet.image = new Image();
         newBullet.image.src = "img/bullet.png";
-        bulletList2.push(newBullet);
+        bulletList.push(newBullet);
     });
     
-    bulletList = [...bulletList2]
-    // requestAnimationFrame(draw);
+    //bulletList = [...bulletList2]
+    requestAnimationFrame(draw);
 });
 
 // Танк
@@ -352,6 +352,9 @@ function draw() {
     requestAnimationFrame(draw);
     // очищаем холст
     context.clearRect(0, 0, canvas.width, canvas.height);
+    
+    
+    console.log(tankList, bulletList)
 
     for (var i = 0; i < bulletList.length; i++) {
 

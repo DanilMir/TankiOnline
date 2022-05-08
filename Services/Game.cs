@@ -35,9 +35,9 @@ public class Game : IGame
 
             
             // Console.WriteLine("State");
-            await _context.Clients.All.SendAsync("BulletsState", this.Bullets);
-            await _context.Clients.All.SendAsync("TanksState", this.Tanks);
-            // await _context.Clients.All.SendAsync("State", this.Tanks, this.Bullets);
+            // await _context.Clients.All.SendAsync("BulletsState", this.Bullets);
+            // await _context.Clients.All.SendAsync("TanksState", this.Tanks);
+            await _context.Clients.All.SendAsync("State", this.Tanks, this.Bullets);
             Thread.Sleep(16);
         }
     }
