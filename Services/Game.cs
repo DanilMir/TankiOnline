@@ -4,7 +4,7 @@ using TankiOnline.Hubs;
 
 namespace TankiOnline.Services;
 
-public class Game : IGame
+public class Game
 {
     public static int Height { get; set; } = 600;
     public static int Width { get; set; } = 600;
